@@ -164,10 +164,54 @@
           <!-- Ubicación -->
           <div class="form-row">
             <div class="form-group">
-              <label for="location">Ubicación</label>
-              <input type="text" id="location" name="location" class="form-control" placeholder="Villa Ángela, Chaco">
+              <label for="street">Calle</label>
+              <input type="text" id="street" name="street" class="form-control" placeholder="Av. San Martín">
             </div>
-            
+            <div class="form-group">
+              <label for="streetNumber">Número</label>
+              <input type="text" id="streetNumber" name="streetNumber" class="form-control" placeholder="123">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">Ciudad</label>
+              <input type="text" id="city" name="city" class="form-control" placeholder="Villa Ángela">
+            </div>
+            <div class="form-group">
+              <label for="province">Provincia</label>
+              <select id="province" name="province" class="form-control">
+                <option value="">Seleccionar provincia</option>
+                <option value="Chaco">Chaco</option>
+                <option value="Corrientes">Corrientes</option>
+                <option value="Formosa">Formosa</option>
+                <option value="Misiones">Misiones</option>
+                <option value="Santa Fe">Santa Fe</option>
+                <option value="Entre Ríos">Entre Ríos</option>
+                <option value="Buenos Aires">Buenos Aires</option>
+                <option value="Córdoba">Córdoba</option>
+                <option value="Tucumán">Tucumán</option>
+                <option value="Salta">Salta</option>
+                <option value="Jujuy">Jujuy</option>
+                <option value="Santiago del Estero">Santiago del Estero</option>
+                <option value="Catamarca">Catamarca</option>
+                <option value="La Rioja">La Rioja</option>
+                <option value="San Juan">San Juan</option>
+                <option value="Mendoza">Mendoza</option>
+                <option value="San Luis">San Luis</option>
+                <option value="La Pampa">La Pampa</option>
+                <option value="Río Negro">Río Negro</option>
+                <option value="Neuquén">Neuquén</option>
+                <option value="Chubut">Chubut</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Tierra del Fuego">Tierra del Fuego</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="location">Ubicación completa</label>
+              <input type="text" id="location" name="location" class="form-control" placeholder="Se genera automáticamente" readonly>
+            </div>
             <div class="form-group">
               <label for="mapUrl">Enlace del Mapa (opcional)</label>
               <input type="url" id="mapUrl" name="mapUrl" class="form-control" placeholder="https://maps.google.com/...">
@@ -203,6 +247,13 @@
               <label for="phone">Teléfono</label>
               <input type="tel" id="phone" name="phone" class="form-control" placeholder="11 1234-5678">
             </div>
+          </div>
+
+          <!-- Comodidades -->
+          <div class="form-group full-width">
+            <label for="amenities">Comodidades (opcional)</label>
+            <textarea id="amenities" name="amenities" class="form-control" placeholder="Pileta, Garage, Jardín, Aire acondicionado, etc." rows="2"></textarea>
+            <small class="form-hint">Separe cada comodidad con una coma</small>
           </div>
 
           <!-- Descripciones -->
