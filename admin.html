@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración | Ubify</title>
+  <link rel="stylesheet" href="./admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="header-content">
+      <div class="logo-container">
+        <img src="logo-negro-sinfondo.png" alt="Logo" class="logo">
+        <div class="header-titles">
+          <h1 class="header-title">Ubify</h1>
+          <h2 class="header-subtitle">Panel de Administración</h2>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn-web">
+          <i class="fas fa-external-link-alt"></i> Ir al sitio
+        </a>
+        <div class="user-menu">
+          <span class="user-name">Admin</span>
+          <i class="fas fa-user-circle user-icon"></i>
+        </div>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <ul>
+        <li class="active"><a href="#"><i class="fas fa-home"></i> Propiedades</a></li>
+        <!--
+        <li><a href="#"><i class="fas fa-users"></i> Clientes</a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i> Reportes</a></li>
+        <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+        -->
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="properties-container">
+      <div class="properties-header">
+        <h2 class="properties-title">Propiedades existentes</h2>
+        <div class="properties-controls">
+          <div class="search-container">
+            <input type="text" id="search-input" placeholder="Buscar propiedades..." class="form-control">
+            <button class="btn btn-secondary" id="search-btn">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button class="btn btn-primary" id="add-property-btn">
+            <i class="fas fa-plus"></i> Agregar nueva
+          </button>
+        </div>
+      </div>
+      <div class="properties-filters">
+        <select id="filter-operation" class="form-control">
+          <option value="">Todas las operaciones</option>
+          <option value="Venta">Venta</option>
+          <option value="Alquiler">Alquiler</option>
+        </select>
+        <select id="filter-type" class="form-control">
+          <option value="">Todos los tipos</option>
+          <option value="Departamento">Departamento</option>
+          <option value="PH">PH</option>
+          <option value="Casa">Casa</option>
+          <option value="Terreno y lotes">Terreno y lotes</option>
+          <option value="Cochera">Cochera</option>
+          <option value="Local">Local</option>
+          <option value="Oficina">Oficina</option>
+          <option value="Consultorio">Consultorio</option>
+          <option value="Quinta">Quinta</option>
+          <option value="Chacra">Chacra</option>
+          <option value="Galpón">Galpón</option>
+          <option value="Campo">Campo</option>
+          <option value="Hotel">Hotel</option>
+          <option value="Fondo de comercio">Fondo de comercio</option>
+          <option value="Edificio">Edificio</option>
+        </select>
+        <button class="btn btn-secondary" id="filter-featured">
+          <i class="fas fa-star"></i> Solo destacados
+        </button>
+        <button class="btn btn-secondary" id="clear-filters">
+          <i class="fas fa-times"></i> Limpiar filtros
+        </button>
+      </div>
+      <div class="properties-stats">
+        <span id="total-properties">0 propiedades</span>
+        <span id="featured-count">0 destacadas</span>
+      </div>
+      <div id="listaPropiedades" class="properties-list"></div>
+      <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando propiedades...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para agregar/editar propiedad -->
+  <div class="modal" id="add-property-modal">
+    <div class="modal-content modern-modal">
+      <div class="modal-header">
+        <h2 class="form-title" id="modal-title">
+          <i class="fas fa-home"></i>
+          Agregar propiedad
+        </h2>
+        <button class="modal-close" id="close-modal-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="propForm" class="simple-form">
+          <!-- Información básica -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="title">Título</label>
+              <input type="text" id="title" name="title" class="form-control" placeholder="Ej: Casa en Villa Ángela">
+            </div>
+            
+            <div class="form-group">
+              <label for="type">Tipo</label>
+              <select id="type" name="type" class="form-control">
+                <option value="">Seleccionar tipo</option>
+                <option value="Casa">Casa</option>
+                <option value="Departamento">Departamento</option>
+                <option value="PH">PH</option>
+                <option value="Terreno y lotes">Terreno y lotes</option>
+                <option value="Local">Local</option>
+                <option value="Oficina">Oficina</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="operation">Operación</label>
+              <select id="operation" name="operation" class="form-control">
+                <option value="Venta">Venta</option>
+                <option value="Alquiler">Alquiler</option>
+                <option value="Alquiler temporal">Alquiler temporal</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="price">Precio</label>
+              <input type="number" id="price" name="price" class="form-control" placeholder="150000">
+            </div>
+            
+            <div class="form-group">
+              <label for="currency">Moneda</label>
+              <select id="currency" name="currency" class="form-control">
+                <option value="ARS">Pesos (ARS)</option>
+                <option value="USD">Dólares (USD)</option>
+                <option value="EUR">Euros (EUR)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="location">Ubicación</label>
+              <input type="text" id="location" name="location" class="form-control" placeholder="Villa Ángela, Chaco">
+            </div>
+            
+            <div class="form-group">
+              <label for="mapUrl">Enlace del Mapa (opcional)</label>
+              <input type="url" id="mapUrl" name="mapUrl" class="form-control" placeholder="https://maps.google.com/...">
+            </div>
+          </div>
+
+          <!-- Características -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="squareMeters">Metros cuadrados</label>
+              <input type="number" id="squareMeters" name="squareMeters" class="form-control" placeholder="85">
+            </div>
+            
+            <div class="form-group">
+              <label for="bedrooms">Dormitorios</label>
+              <input type="number" id="bedrooms" name="bedrooms" class="form-control" placeholder="2" min="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="bathrooms">Baños</label>
+              <input type="number" id="bathrooms" name="bathrooms" class="form-control" placeholder="1" min="0">
+            </div>
+          </div>
+
+          <!-- Contacto -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="owner">Propietario/Contacto</label>
+              <input type="text" id="owner" name="owner" class="form-control" placeholder="Nombre del propietario">
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Teléfono</label>
+              <input type="tel" id="phone" name="phone" class="form-control" placeholder="11 1234-5678">
+            </div>
+          </div>
+
+          <!-- Descripciones -->
+          <div class="form-group full-width">
+            <label for="description">Descripción corta</label>
+            <textarea id="description" name="description" class="form-control" placeholder="Breve descripción de la propiedad" rows="3"></textarea>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="detailedDescription">Descripción detallada</label>
+            <textarea id="detailedDescription" name="detailedDescription" class="form-control" placeholder="Descripción completa con todos los detalles" rows="4"></textarea>
+          </div>
+
+          <!-- Imágenes -->
+          <div class="form-group full-width">
+            <label for="images">URLs de imágenes (una por línea)</label>
+            <div class="flex gap-2 mb-2">
+              <textarea id="images" name="images" class="form-control flex-1" placeholder="https://ejemplo.com/imagen1.jpg&#10;https://ejemplo.com/imagen2.jpg" rows="3"></textarea>
+              <button type="button" id="uploadImageBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
+                <i class="fas fa-upload"></i>
+                Cargar
+              </button>
+            </div>
+            <small class="form-hint">Pegue las URLs de las imágenes, una por línea, o use el botón "Cargar" para subir imágenes</small>
+            <div id="imagePreview" class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+          </div>
+
+          <!-- Configuración -->
+          <div class="form-group full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="featured" name="featured" class="form-checkbox">
+              <span class="checkmark"></span>
+              Destacar esta propiedad
+            </label>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modern-btn" id="cancel-btn">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button type="submit" form="propForm" class="btn btn-success modern-btn">
+          <span id="submit-btn-text">
+            <i class="fas fa-save"></i> Guardar Propiedad
+          </span>
+          <span class="btn-loading" id="submit-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Modal de confirmación -->
+  <div class="modal" id="confirmation-modal">
+    <div class="modal-content small-modal">
+      <div class="modal-body">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h3 id="confirmation-message">Propiedad guardada con éxito</h3>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="confirm-ok-btn">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación de eliminación -->
+  <div class="modal" id="delete-modal">
+    <div class="modal-content small-modal">
+      <div class="modal-body">
+        <i class="fas fa-exclamation-circle warning-icon"></i>
+        <h3>¿Estás seguro de eliminar esta propiedad?</h3>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="delete-cancel-btn">Cancelar</button>
+        <button class="btn btn-danger" id="delete-confirm-btn">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para cargar imágenes -->
+  <div class="modal" id="upload-image-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="form-title">
+          <i class="fas fa-upload"></i>
+          Cargar Imagen
+        </h2>
+        <button class="modal-close" id="close-upload-modal-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="upload-container">
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-content">
+              <i class="fas fa-cloud-upload-alt upload-icon"></i>
+              <h3>Arrastra una imagen aquí</h3>
+              <p>o haz clic para seleccionar</p>
+              <input type="file" id="imageInput" accept="image/*" class="hidden">
+            </div>
+          </div>
+          
+          <div id="uploadPreview" class="hidden mt-4">
+            <img id="previewImage" class="max-w-full h-64 object-contain rounded-lg mx-auto" alt="Vista previa">
+          </div>
+          
+          <div id="uploadLoading" class="hidden text-center py-4">
+            <div class="inline-flex items-center gap-2 text-blue-600">
+              <i class="fas fa-spinner fa-spin"></i>
+              <span>Subiendo imagen...</span>
+            </div>
+          </div>
+          
+          <div id="uploadResult" class="hidden mt-4">
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 text-green-600 mb-2">
+                <i class="fas fa-check-circle"></i>
+                <span class="font-medium">¡Imagen subida exitosamente!</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="text" id="imageUrl" class="form-control flex-1" readonly>
+                <button id="copyUrlBtn" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close-upload-btn">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn-success" id="add-image-btn" disabled>
+          <i class="fas fa-plus"></i> Agregar al formulario
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./admin.js"></script>
+  <script>
+    // Fallback en caso de que el módulo no se cargue
+    window.addEventListener('error', function(e) {
+      if (e.target.tagName === 'SCRIPT') {
+        console.error('Error cargando script:', e.target.src);
+        document.body.innerHTML = '<div style="padding: 2rem; text-align: center; color: red;"><h2>Error cargando la aplicación</h2><p>Verifica que admin.js esté en la misma carpeta que admin.html</p></div>';
+      }
+    });
+  </script>
+</body>
+</html>
