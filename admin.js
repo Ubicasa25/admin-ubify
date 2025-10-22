@@ -30,7 +30,6 @@ const clearFilters = document.getElementById('clear-filters');
 const refreshBtn = document.getElementById('refresh-btn');
 const totalProperties = document.getElementById('total-properties');
 const featuredCount = document.getElementById('featured-count');
-const descCounter = document.getElementById('desc-counter');
 const descriptionField = document.getElementById('description');
 const currencySelect = document.getElementById('currency');
 const priceField = document.getElementById('price');
@@ -120,7 +119,10 @@ function setupEventListeners() {
 function updateCurrencySymbol() {
   const symbol = currencySelect.value === 'USD' ? 'US$' : 
                  currencySelect.value === 'EUR' ? '€' : '$';
-  document.getElementById('currency-symbol').textContent = symbol;
+  const currencySymbol = document.getElementById('currency-symbol');
+  if (currencySymbol) {
+    currencySymbol.textContent = symbol;
+  }
 }
 
 // Actualizar ubicación automáticamente
@@ -157,16 +159,19 @@ function updateLocation() {
 // Actualizar contador de caracteres
 function updateCharacterCount() {
   const count = descriptionField.value.length;
-  descCounter.textContent = count;
-  
-  if (count > 180) {
-    descCounter.style.color = '#f59e0b';
-  } else {
-    descCounter.style.color = '#6b7280';
-  }
-  
-  if (count >= 200) {
-    descCounter.style.color = '#dc2626';
+  const descCounter = document.getElementById('desc-counter');
+  if (descCounter) {
+    descCounter.textContent = count;
+    
+    if (count > 180) {
+      descCounter.style.color = '#f59e0b';
+    } else {
+      descCounter.style.color = '#6b7280';
+    }
+    
+    if (count >= 200) {
+      descCounter.style.color = '#dc2626';
+    }
   }
 }
 
@@ -193,10 +198,10 @@ function closeModal() {
 // Limpiar formulario
 function limpiarFormulario() {
   console.log("Clearing form...");
-  form.reset();
+  if (form) form.reset();
   editandoId = null;
-  modalTitle.textContent = 'Agregar propiedad';
-  submitBtnText.textContent = 'Guardar Propiedad';
+  if (modalTitle) modalTitle.textContent = 'Agregar propiedad';
+  if (submitBtnText) submitBtnText.textContent = 'Guardar Propiedad';
   updateCharacterCount();
   updateCurrencySymbol();
 }
@@ -375,8 +380,12 @@ function renderProperties(properties) {
 // Actualizar estadísticas
 function updateStats() {
   console.log("Updating stats:", currentProperties.length, featuredPropertiesCount);
-  totalProperties.textContent = `${currentProperties.length} ${currentProperties.length === 1 ? 'propiedad' : 'propiedades'}`;
-  featuredCount.textContent = `${featuredPropertiesCount} destacada${featuredPropertiesCount !== 1 ? 's' : ''}`;
+  if (totalProperties) {
+    totalProperties.textContent = `${currentProperties.length} ${currentProperties.length === 1 ? 'propiedad' : 'propiedades'}`;
+  }
+  if (featuredCount) {
+    featuredCount.textContent = `${featuredPropertiesCount} destacada${featuredPropertiesCount !== 1 ? 's' : ''}`;
+  }
 }
 
 // Aplicar filtros
@@ -551,8 +560,8 @@ function editarPropiedad(id, p) {
   console.log("Preparing to edit property:", id);
   try {
     editandoId = id;
-    modalTitle.textContent = 'Editar propiedad';
-    submitBtnText.textContent = 'Actualizar Propiedad';
+    if (modalTitle) modalTitle.textContent = 'Editar propiedad';
+    if (submitBtnText) submitBtnText.textContent = 'Actualizar Propiedad';
     
     const fieldMap = {
       title: form.title,
@@ -579,40 +588,13 @@ function editarPropiedad(id, p) {
     };
 
     for (const [key, field] of Object.entries(fieldMap)) {
-      if (p.hasOwnProperty(key)) {
+      if (p.hasOwnProperty(key) && field) {
         if (key === 'images' && Array.isArray(p[key])) {
           field.value = p[key].join('\n');
-        } else if (key === 'amenities' && Array.isArray(p[key])) {
-          field.value = p[key].join(', ');
         } else if (field.type === 'checkbox') {
           field.checked = p[key];
         } else {
-          field.value = p[key];
-        }
-      }
-    }
-    
-    // Manejar propiedades antiguas que no tienen los nuevos campos de ubicación
-    if (!p.street && p.location) {
-      // Intentar extraer información de la ubicación existente
-      const locationParts = p.location.split(',');
-      if (locationParts.length >= 2) {
-        const streetInfo = locationParts[0].trim().split(' ');
-        if (streetInfo.length >= 2) {
-          // Asumir que el último elemento es el número
-          form.street.value = streetInfo.slice(0, -1).join(' ');
-          form.streetNumber.value = streetInfo[streetInfo.length - 1];
-        } else {
-          form.street.value = locationParts[0].trim();
-        }
-        
-        if (locationParts.length >= 3) {
-          form.city.value = locationParts[1].trim();
-          form.province.value = locationParts[2].trim();
-        } else if (locationParts.length === 2) {
-          // Si solo hay 2 partes, asumir que la segunda es la ciudad
-          form.city.value = locationParts[1].trim();
-          form.province.value = 'Chaco'; // Valor por defecto
+          field.value = p[key] || '';
         }
       }
     }
