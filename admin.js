@@ -450,7 +450,7 @@ async function handleFormSubmit(e) {
   console.log("Submitting form...");
   
   // Validar campos requeridos
-  const requiredFields = ['title', 'street', 'streetNumber', 'city', 'province', 'type', 'operation', 'price', 'currency', 'description', 'detailedDescription', 'squareMeters', 'bedrooms', 'bathrooms', 'owner', 'phone'];
+  const requiredFields = ['title', 'street', 'city', 'province', 'type', 'operation', 'price', 'currency', 'description', 'detailedDescription', 'squareMeters', 'bedrooms', 'bathrooms', 'owner', 'phone'];
   const missingFields = [];
   
   requiredFields.forEach(fieldName => {
@@ -470,8 +470,12 @@ async function handleFormSubmit(e) {
   submitLoading.style.display = 'inline-block';
   submitBtn.disabled = true;
   
-  // Generar ubicación completa
-  const fullLocation = `${form.street.value} ${form.streetNumber.value}, ${form.city.value}, ${form.province.value}`;
+  // Generar ubicación completa (sin número si no está presente)
+  let fullLocation = form.street.value;
+  if (form.streetNumber.value.trim()) {
+    fullLocation += ` ${form.streetNumber.value}`;
+  }
+  fullLocation += `, ${form.city.value}, ${form.province.value}`;
   
   // Actualizar el campo de ubicación automáticamente
   form.location.value = fullLocation;
@@ -490,7 +494,7 @@ async function handleFormSubmit(e) {
     currency: form.currency.value,
     description: form.description.value,
     detailedDescription: form.detailedDescription.value,
-    squareMeters: Number(form.squareMeters.value),
+    squareMeters: form.squareMeters.value.trim(),
     bedrooms: Number(form.bedrooms.value),
     bathrooms: Number(form.bathrooms.value),
     owner: form.owner.value,
