@@ -168,7 +168,7 @@
               <input type="text" id="street" name="street" class="form-control" placeholder="Av. San Martín">
             </div>
             <div class="form-group">
-              <label for="streetNumber">Número</label>
+              <label for="streetNumber">Número (opcional)</label>
               <input type="text" id="streetNumber" name="streetNumber" class="form-control" placeholder="123">
             </div>
           </div>
@@ -222,7 +222,8 @@
           <div class="form-row">
             <div class="form-group">
               <label for="squareMeters">Metros cuadrados</label>
-              <input type="number" id="squareMeters" name="squareMeters" class="form-control" placeholder="85">
+              <input type="text" id="squareMeters" name="squareMeters" class="form-control" placeholder="85 o 10 x 30">
+              <small class="form-hint">Puede ingresar un número o formato como "10 x 30"</small>
             </div>
             
             <div class="form-group">
@@ -398,7 +399,7 @@
     </div>
   </div>
 
-  <script type="module" src="./admin.js"></script>
+  <script type="module" src="admin.js"></script>
   <script>
     // Fallback en caso de que el módulo no se cargue
     window.addEventListener('error', function(e) {
